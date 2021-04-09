@@ -1,0 +1,16 @@
+#%RAML 1.0 Library
+usage: collection of library
+annotationTypes:
+  annotation: !include annotation.raml
+traits:
+  401unauth: !include Traits/401.raml
+  403forbidden: !include Traits/403.raml
+  404notFound: !include Traits/404.raml
+types:
+  ProductDataType: !include DataType/ProductDataType.raml 
+securitySchemes:
+  oathSecurity: !include securityScheme.raml
+resourceTypes:
+  getRes200: !include Types/getRes200.raml
+  postRes201: !include Types/postRes201.raml
+  getpostuser: !include Types/getpostuser.raml
