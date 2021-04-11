@@ -1,0 +1,20 @@
+#%RAML 1.0 SecurityScheme
+type: Basic Authentication
+description: This API supports Basic Auth
+describedBy:
+  headers:
+    authorization:
+      description: user have to send valid pwd and username to access the res
+  queryParameters:
+    password:
+      type: string
+      description: password
+    username:
+      type: string
+      description: username
+  responses:
+    403:
+      description: Forbidden
+    401:
+      description: unauthorized user
+    

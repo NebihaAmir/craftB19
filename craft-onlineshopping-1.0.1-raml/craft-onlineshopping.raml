@@ -1,0 +1,126 @@
+#%RAML 1.0
+title: craft-online-APIspec
+version: 0.1
+mediaType: 
+- application/json 
+uses:
+ lib: library.raml
+/products:
+  get:
+
+      queryParameters:
+        name:
+          type: string
+          maxLength: 20
+          example: Dell
+            
+        productId:
+          type: integer
+          description: the if of the product
+          required: false
+          example: 123
+      headers:
+        connection-type:
+          description: multiple connection is allowed
+          type: array
+          required: false
+        conn-session-info:
+          description: connections session id is mandatory
+          type: integer
+          required: true
+          example: 9878743887483
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.productType[]
+              example: !include Examples/products.raml
+      is:
+        - lib.404response
+ 
+  /{productID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.productType
+              example: !include Examples/product.raml
+  is:
+    - lib.404response
+/orders:
+  type:
+    lib.postResponce:
+      exampleReference1:
+        {
+          "orderid": 1542,
+          "amount": "5000"
+        }
+  get:
+    responses:
+     200:
+      body:
+        application/json:
+          type: lib.orderType[]
+          example: !include Examples/orders.raml
+  is:
+    - lib.404response
+            
+  /{orderID}: 
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.orderType
+              example: !include Examples/order.raml
+    is:
+      - lib.404response
+/users:
+  type:
+    lib.postResponce:
+      exampleReference1:
+        {
+          "uid": 14585
+        }
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: lib.userType[]
+            example: !include Examples/users.raml
+    is:
+      - lib.404response
+
+  /{userId}:
+    get:
+      responses:
+        201:
+          body:
+            application/json:
+              type: lib.userType
+              example: !include Examples/user.raml
+    is:
+    - lib.404response
+
+/category:
+  get:
+    responses:
+        200:
+          body:
+            application/json:
+              type: lib.categoryType[]
+              example: !include Examples/categories.raml
+  is:
+    - lib.404response
+  /{catgoryId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.categoryType
+              example: !include Examples/category.raml
+    is:
+    - lib.404response 
