@@ -1,0 +1,147 @@
+#%RAML 1.0
+title: craft-online-Apispec
+mediaType: 
+- application/json
+uses:
+  myLib: library.raml
+/products:
+  get:
+    description: get list of all products
+    queryParameters:
+      name:
+        type: string
+        description: the name of the product
+        maxLength: 20
+        required: false
+        example: Dell
+      productId:
+        type: integer
+        description: the id of the product
+        required: false
+        example: 4567
+      price:
+        type: integer
+        description: price of the product
+        required: false
+        minimum: 10
+        example: 200
+    headers:
+      connection-type:
+       description: multiple connection allowed
+       type: array
+       required: false
+      conn-session-info:
+        description: connection session id is mandatory
+        type: integer
+        required: true
+        example: 2348976541
+    responses:
+      200:
+        body:
+          application/json:
+            type: myLib.productType[]
+            example: !include Examples/products.raml
+              
+  is:
+    - myLib.404response
+
+  /{productId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: myLib.productType
+              example: !include Examples/product.raml
+               
+    is:
+      - myLib.404response
+    
+/orders:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: myLib.orderType[]
+            example: !include Examples/orders.raml
+             
+  is:
+    - myLib.404response
+
+  type:
+    myLib.postResponse:
+      exampleReferance1: !include Examples/postOrders.raml
+
+  /{orderId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: myLib.orderType
+              example: !include Examples/order.raml
+    is:
+      - myLib.404response
+
+    type:
+      myLib.postResponse:
+        exampleReferance1: !include Examples/postOrder.raml
+    
+/users:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: myLib.userType[]
+            example: !include Examples/users.raml
+             
+  is:
+    - myLib.404response
+
+  type:
+    myLib.postResponse:
+      exampleReferance1: !include Examples/postUsers.raml
+    
+  /{userId}: 
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: myLib.userType
+              example: !include Examples/user.raml
+    is:
+      - myLib.404response
+
+    type:
+      myLib.postResponse:
+        exampleReferance1: !include Examples/postUser.raml
+    
+    
+/catagories:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: myLib.catagoryType[]
+            example: !include Examples/catagories.raml 
+  is:
+    - myLib.404response
+
+  /{catagoryId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: myLib.catagoryType
+              example: !include Examples/catagory.raml
+    is:
+      - myLib.404response
+              
+        
+              
+    

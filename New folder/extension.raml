@@ -1,0 +1,33 @@
+#%RAML 1.0 Extension
+extends: craft-online-shopping.raml
+usage: this file defines additional methods for admins
+/products:
+  description: this is product resource with all http methods
+  get:
+    description: getting list of products
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              !include Examples/products.raml
+  put:
+  post:
+  delete:
+    description: admin have to send valid user name and password to perform this function
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "msg": "product removed"
+              }
+      401:
+        body:
+          application/json:
+            example:
+              {
+                "msg": "unauthorized user"
+              }
+    
