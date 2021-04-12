@@ -1,0 +1,17 @@
+#%RAML 1.0 ResourceType
+get:
+  description: get list of all <<resourcePathName>>
+  queryParameters:
+    name?: string
+    id: integer
+  headers:
+    connection-type:
+      description: multiple connection is allowed
+      type: array
+      required: false     
+  responses:
+    200:
+      body:
+        application/json:
+           example:         
+             "<<exampleReferance1>>"

@@ -1,0 +1,16 @@
+#%RAML 1.0 AnnotationTypeDeclaration
+properties:
+  usage:
+    description: to understand details about the api spec
+    properties:
+      protocol:
+        description: the api uses HTTP
+        default: HTTP
+      MethodUsage?:
+        description: users can use get and post methods
+        type: boolean
+        default: False
+      AdminMethodUsage:
+        description: admins can use all methods
+        type: boolean
+        default: True

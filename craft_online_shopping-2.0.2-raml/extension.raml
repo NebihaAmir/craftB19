@@ -1,0 +1,57 @@
+#%RAML 1.0 Extension
+extends: craft_online_shopping.raml
+usage: This file define additional methods other than get and post
+/products: 
+  description: the rest of common http methods for products resource
+  put:
+    description: admins are permited to alter 
+    queryParameters:
+      Username:
+        type: string
+        required: true
+      Password:
+        type: integer
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "Msg": "Product altered"
+              }
+      401: 
+       body:
+         application/json:
+           example:
+              {
+                "Msg": "unauthorised user"
+              }
+  delete:
+    description: admins are permited to remove products
+    queryParameters:
+      Username:
+        type: string
+        required: true
+      Password:
+        type: integer
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "Msg": "Product removed"
+              }
+      401:
+       body:
+         application/json:
+           example:
+              {
+                "Msg": "unauthorised user"
+               }
+  
+
+        
+    

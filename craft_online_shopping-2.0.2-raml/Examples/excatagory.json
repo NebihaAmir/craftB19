@@ -1,0 +1,14 @@
+[
+  {
+	"catagoryname": "TV ",
+	"description": "all TV brands",
+	"catagoryId": 453,
+	"Brandname": "Sony",	
+	"BrandID": 126
+  },{
+	"catagoryname": "CellPhone ",
+	"description": "all phone brands",
+	"catagoryId": 673,
+	"Brandname": "Apple",	
+	"BrandID": 456}
+]
