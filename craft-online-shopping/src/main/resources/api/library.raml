@@ -1,0 +1,15 @@
+#%RAML 1.0 Library
+usage: uses collection of APi fragments
+
+types:
+  product: !include /types/productDataType.raml
+  order: !include /types/orderDataType.raml
+  user: !include /types/usersdataType.raml
+  category: !include /types/CatedataType.raml
+traits:
+  404resp: !include traits/404trait.raml
+  HeadandQuery: !include  traits/Headers.raml
+securitySchemes:
+  security: !include securityScheme.raml
+resourceTypes:
+  getType: !include resource/getType.raml

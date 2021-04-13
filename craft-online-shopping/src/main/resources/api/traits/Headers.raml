@@ -1,0 +1,25 @@
+#%RAML 1.0 Trait
+headers:
+  Authorization:
+      type: string
+      displayName: Authorization-ID
+      required: true
+      default: ABC1
+  Password: 
+      type: string
+      minLength: 5
+      example: ABC@1
+queryParameters:
+  type: 
+    displayName: Choose one to proceed
+    description: lets you choose the data of data you quere
+    required: true
+    type: string
+    enum: [product, User, order, category]
+  Value: 
+    displayName: Value
+    description: lets you access <<resourcePathName>>
+    required: false
+    type: string
+
+
