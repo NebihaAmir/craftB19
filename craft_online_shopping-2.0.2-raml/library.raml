@@ -1,0 +1,16 @@
+#%RAML 1.0 Library
+usage:
+traits:
+  404res: !include traits/404trait.raml
+securitySchemes:
+  security: !include securityScheme.raml  
+resourceTypes:
+  postres: !include Resource-type/PostResponse.raml 
+  gethead: !include Resource-type/getresponse.raml 
+  nget: !include Resource-type/nestget.raml
+  bothm: !include Resource-type/bothmethods.raml
+types:
+  dtusers: !include DataTypes/Userdt.raml
+  dtprod: !include DataTypes/Productdt.raml
+  dtorder: !include  DataTypes/orderdt.raml
+  dtcatagory: !include DataTypes/catagorydt.raml  

@@ -1,0 +1,72 @@
+#%RAML 1.0
+title: Craft_online_shopping
+version: 1.0.1
+mediaType: 
+- application/json
+uses:
+  lib: library.raml
+/products:
+  type: 
+    lib.gethead:
+        type: lib.dtprod
+        exampleReferance1: 
+             !include Examples/exprod.json             
+  is: lib.404res   
+
+  /{productid}:
+    type:
+      lib.nget:
+        type: lib.dtprod
+        exampleReferance3: 
+            !include Examples/segprod.json  
+    is: lib.404res                              
+/users:
+  type:
+    lib.bothm:
+        exampleReferance1: 
+             !include Examples/exuser.json  
+        exampleReferance2:  
+            !include Examples/postuser.json
+  /{userid}:
+    type:
+      lib.nget:
+        exampleReferance3: 
+            !include Examples/seguser.json   
+      is: lib.404res              
+
+/orders:
+  type:
+    lib.bothm:
+        exampleReferance1: 
+             !include Examples/exprod.json
+        exampleReferance2:  
+            !include Examples/Postpro.json  
+             
+  /{orderid}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.dtorder
+              example: !include Examples/segorder.json 
+    is: lib.404res  
+
+/catagories:
+  type: 
+    lib.gethead:
+        type:
+          lib.
+        exampleReferance1: 
+             !include Examples/excatagory.json          
+  is: lib.404res 
+    
+  /{catagoryid}:
+    type: 
+      lib.nget:
+        exampleReferance3: 
+              !include Examples/segcatg.json  
+    is: lib.404res   
+
+
+          

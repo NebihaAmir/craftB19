@@ -1,0 +1,71 @@
+#%RAML 1.0 ResourceType
+get:
+  description: get list of all <<resourcePathName>>
+  queryParameters:
+    name?: string
+    id: integer
+  headers:
+    connection-type:
+      description: multiple connection is allowed
+      type: array
+      required: false     
+  responses:
+    200:
+      body:
+        application/json:
+           example:         
+             "<<exampleReferance1>>"
+    404:
+      body:
+        application/json:
+          example:
+            {
+            "message" : "Resource Not Found"
+            }
+    401:
+      body:
+        application/json:
+          example:
+            {
+            "message" : "	Not Authorized"
+            }                                 
+post:
+  queryParameters:
+  body:
+    type: object
+    properties:
+      username:
+        type: string
+        required: true
+        minLength: 4
+        maxLength: 22
+        example: abcde@abc.coms
+          
+      id:
+        type: string
+        required: true
+        minLength: 8
+        maxLength: 12
+
+  description: <<resourcePathName>> created
+  responses:
+    201:
+      body:
+        application/json:
+          example:
+             "<<exampleReferance2>>"
+            # {"msg": "<<resourcePathName>> Created"}  
+    404:
+      body:
+        application/json:
+          example:
+            {
+            "message" : "Resource Not Found"
+            }
+    401:
+      body:
+        application/json:
+          example:
+            {
+            "message" : "	Not Authorized"
+            }                        

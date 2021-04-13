@@ -1,0 +1,17 @@
+#%RAML 1.0 SecurityScheme
+type: OAuth 2.0
+description: This API support OAuth authentication 
+describedBy:
+  headers:
+    Authorization: 
+      description: user to send valid passcode to access
+  queryParameters:
+    token:
+      type: integer
+      required: true
+  responses:
+    401:
+      description: Not Authorized
+    403:
+      description: Forbidden      
+    
