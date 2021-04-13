@@ -1,0 +1,167 @@
+#%RAML 1.0 Extension
+extends: craft-online-shopping.raml
+usage: this file defines additional methods for Admins
+uses:
+  lib: library.raml
+# types:
+#   product: !include types/productDataType.raml
+#   cate: !include types/CatedataType.raml
+# traits:
+#   Headers: !include traits/Headers.raml
+#   404trait: !include traits/404trait.raml
+
+/products:
+  description: this is products resource with all http requests for Admins 
+  put:
+    is:
+      - lib.HeadandQuery
+    body:
+      application/json:
+        example: !include examples/putPro.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message: product replace succefully  
+  is:
+    - lib.404resp
+                   
+  post:
+    is:
+      - lib.HeadandQuery
+    body:
+      application/json:
+        type: lib.product[]
+        example: !include examples/postProducts.raml
+    responses:
+      201:
+        body: 
+          application/json:
+            example: 
+              message: Product posted to the server successfully
+      400:
+        body:
+          example:
+            message: Bad Request
+
+  delete:
+    is:
+      - lib.HeadandQuery
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              message: products deleted successfully
+      403:
+        body:
+          application/json:
+            example:
+              message: unauthorized  
+  /{productID}:
+    put:
+      is:
+        - lib.HeadandQuery
+      body:
+        application/json:
+          type: lib.product
+          example: !include examples/putPro.raml 
+      responses:
+        201:
+          body:
+            application/json:
+              example:
+                message: product replaced succesfully
+        403:
+          body:
+            application/json:
+              example:
+                message: unauthorized
+        404:
+          body:
+            application/json:
+              example:
+                message: Not Found  
+    delete:
+      is:
+        - lib.HeadandQuery
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: product deleted
+        403:
+          body:
+            application/json:
+              example:
+                message: unauthorized
+         
+/users:
+  delete:
+    is:
+      - lib.HeadandQuery
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              message: Users Deleted
+      403:
+        body:
+          application/json:
+            example:
+              message: unauthorized
+      
+/categories:
+  post:
+    is:
+      - lib.HeadandQuery
+    body:
+      application/json:
+        type: lib.category
+        example: !include examples/category.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message: new category added
+      403:
+          body:
+            application/json:
+              example:
+                message: unauthorized
+      404:
+        body:
+          application/json:
+            example:
+              message: Not Found 
+  /{categoryID}:
+    delete:
+      is:
+        - lib.HeadandQuery
+      responses: 
+        200:
+          body:
+            application/json:
+              example:
+                message: category deleted
+        403:
+          body:
+            application/json:
+              example:
+                message: unauthorized
+    is:
+      - lib.404resp
+         
+          
+
+    
+
+          
+          
+      
+  
+  

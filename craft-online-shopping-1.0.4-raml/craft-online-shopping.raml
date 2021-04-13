@@ -1,0 +1,138 @@
+#%RAML 1.0
+title: Craft-Online-Shopping
+description: Rest API Documentation
+version: 1.0
+securitySchemes:
+  OAuth2.0: !include securityScheme.raml
+mediaType: 
+- application/json
+uses:
+  lib: library.raml
+securedBy:
+  - OAuth2.0
+# annotationTypes:
+#   new: !include annotation.raml
+/products:
+  type:
+    lib.getType:
+      type: lib.product[]
+      exampleReferences: !include /examples/products.raml 
+  is:
+    - lib.404resp
+  /{productID}:
+    type:
+      lib.getType:
+        type: lib.product
+        exampleReferences: !include /examples/product.raml 
+    is:
+      - lib.404resp       
+/orders:
+  type:  
+    lib.getType: 
+      type: lib.order[]
+      exampleReferences: !include examples/orders.raml 
+  is:
+    - lib.404resp
+  post:
+    is:
+      - lib.HeadandQuery
+    body:
+      application/json:
+        type: lib.order
+        example: !include /examples/order.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              Message: products posted
+      401:
+        body:
+          application/json:
+            example: 
+              message: Unauthorized
+      403:
+        body:
+          application/json:
+            example:
+              message: Forbidden
+  /{orderId}:
+    type:
+      lib.getType:
+        type: lib.order
+        exampleReferences: !include examples/order.raml
+    is:
+      - lib.404resp 
+    delete: 
+      is:
+        - lib.HeadandQuery
+      responses:
+        200:       
+          body:
+            application/json:
+              example: 
+                message: successfully deleted
+/users:
+  type:
+    lib.getType:  
+      type: lib.user []
+      exampleReferences: !include examples/users.raml
+  post:
+    is:
+      - lib.HeadandQuery
+    body:
+      application/json:
+        type: lib.user
+        example: !include /examples/putUser.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message: user registered successfully
+  is:
+    - lib.404resp
+           
+  /{userID}:
+    type:
+      lib.getType:
+        type: lib.user[]
+        exampleReferences: !include examples/users.raml
+    is:
+      - lib.404resp
+    put:
+      is:
+        - lib.HeadandQuery
+      body:
+        application/json:
+          type: lib.user
+          example: !include examples/putUser.raml
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: user updated successfully
+    delete:
+      is:
+        - lib.HeadandQuery
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: user successfully deleted
+/categories:
+  type:
+    lib.getType:
+      type: lib.category[]
+      exampleReferences: !include examples/categories.raml
+  is:
+    - lib.404resp 
+  /{categoryID}:
+    type:
+      lib.getType:
+        type: lib.category 
+        exampleReferences: !include examples/category.raml
+    is:
+      - lib.404resp

@@ -1,0 +1,14 @@
+#%RAML 1.0 ResourceType
+get:
+  description: Retrieves <<resourcePathName>> based on the given query parameters
+  displayName: Retrive <<resourcePathName>>
+  is:
+    - lib.HeadandQuery
+  responses:
+    200:
+      body:
+        application/json:
+          type: <<type>>
+          example:
+            "<<exampleReferences>>"
+              
