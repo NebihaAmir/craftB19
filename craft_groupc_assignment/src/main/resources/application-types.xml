@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="JSON1" format="json">
+      <types:shape format="weave" example="examples/DW exercise 1.json"><![CDATA[%dw 2.0
+
+type JSON1 = {|
+  user: Array<{|    id: String,     firstname: String,     middlename: String,     lastname: String,     city: String,     state: String,     address: String,     email: String  |}>
+|} {"example": "{\\\"user\\\":[{\\\"id\\\":\\\"693cacff-147d-4b84-add8-dad773730508\\\",\\\"firstname\\\":\\\"piter\\\",\\\"middlename\\\":\\\"gg\\\",\\\"lastname\\\":\\\"gg\\\",\\\"city\\\":\\\"jj\\\",\\\"state\\\":\\\"New York\\\",\\\"address\\\":\\\"gg\\\",\\\"email\\\":\\\"ggh@hh.nn\\\"},{\\\"id\\\":\\\"53634496-86ee-420b-9d36-64969e417833\\\",\\\"firstname\\\":\\\"tomas\\\",\\\"middlename\\\":\\\"dsfsd\\\",\\\"lastname\\\":\\\"dsfsdf\\\",\\\"city\\\":\\\"AA\\\",\\\"state\\\":\\\"California\\\",\\\"address\\\":\\\"sdsd\\\",\\\"email\\\":\\\"dsdsf@gmail.com\\\"}]}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="JSON2" format="json">
+      <types:shape format="weave" example="examples/DW exercise 2.json"><![CDATA[%dw 2.0
+
+type JSON2 = Array<{|  id: String,   itemname: String,   itemcode: String,   price: String|}> {"example": "[{\\\"id\\\":\\\"693cacff-147d-4b84-add8-dad773730508\\\",\\\"itemname\\\":\\\"ss\\\",\\\"itemcode\\\":\\\"0001\\\",\\\"price\\\":\\\"50\\\"},{\\\"id\\\":\\\"693cacff-147d-4b84-add8-dad773730508\\\",\\\"itemname\\\":\\\"bcc\\\",\\\"itemcode\\\":\\\"0002\\\",\\\"price\\\":\\\"100\\\"},{\\\"id\\\":\\\"693cacff-147d-4b84-add8-dad773730508\\\",\\\"itemname\\\":\\\"hj\\\",\\\"itemcode\\\":\\\"0003\\\",\\\"price\\\":\\\"200\\\"},{\\\"id\\\":\\\"693cacff-147d-4b84-add8-dad773730508\\\",\\\"itemname\\\":\\\"uiu\\\",\\\"itemcode\\\":\\\"0004\\\",\\\"price\\\":\\\"20\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="XMLProblem" format="xml">
+      <types:example format="xml" element="employeers" location="examples/XML practice problem.xml"/>
+    </types:type>
+    <types:type name="CSV" format="csv">
+      <types:shape format="weave" example="examples/employee Full Info.txt"><![CDATA[%dw 2.0
+
+type CSV = Array<{| "employee Full Info": String |}> {"isQuotedString": "false",
+"header": "true",
+"headerLineNumber": "0"}
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+      </types:properties>
+    </types:type>
+    <types:type name="XMLEmployee" format="xml">
+      <types:example format="xml" element="employeers" location="examples/XML employee exercise sheet.xml"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#94928a61-3431-4489-b7fa-4b2402dcfad8">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="JSON1"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#7e62803d-7dd2-4c75-a599-3efa45bcb650">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="JSON1"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#d0711256-6d74-43c9-b57e-bbbe8d51de7e">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="JSON1"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#a6af66d0-0ca1-4c9b-be2b-e2be26973cbe">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="JSON2"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#3e1bff60-9bf6-4bd1-8104-8328fa4577e2">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="JSON2"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#a78a4cf6-21b5-4d83-b8a8-832a1fac03aa">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="JSON1"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#ea3b9396-cd81-4cdc-8a71-0a6d20c63eee">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="JSON2"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#a2292448-6fce-40a0-81ce-7b40d49483df">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="JSON2"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#3d2e5e38-738c-4f06-bc91-6183699e79da"/>
+  <types:enrichment select="#08324dea-d41f-4b7f-a894-8eb944667dc5"/>
+</types:mule>

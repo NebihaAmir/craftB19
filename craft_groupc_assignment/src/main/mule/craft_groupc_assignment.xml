@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6d0f5d89-051b-4733-a058-2045e7b1cc4d">
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="craft_groupc_assignmentFlow" doc:id="517489ba-1475-4b31-9cfd-8d28adc2e4cf" >
+		<http:listener doc:name="Listener" doc:id="4784b74a-aa29-4010-888b-0baf96ca63d8" config-ref="HTTP_Listener_config" path="/problemOne"/>
+		<ee:transform doc:name="Transform Message" doc:id="7e62803d-7dd2-4c75-a599-3efa45bcb650">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload.user map ("$$": $)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="craft_groupc_assignmentFlow1" doc:id="e840cf3c-6bed-4393-b336-b9d5d9d852a0" >
+		<http:listener doc:name="Listener" doc:id="c833212f-bfa1-4c37-96e7-79d4b4f8144a" config-ref="HTTP_Listener_config" path="/problemFive"/>
+		<ee:transform doc:name="Transform Message" doc:id="a78a4cf6-21b5-4d83-b8a8-832a1fac03aa" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+users: (payload.user map (item, index) -> 
+	user:item mapObject (value, key, index) -> ((upper(key)): value)
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="craft_groupc_assignmentFlow2" doc:id="c24474fe-455f-4a18-babc-056d5c43f5af" >
+		<http:listener doc:name="Listener" doc:id="1e6ff08f-9434-4b89-9da1-f2c681fdde9d" config-ref="HTTP_Listener_config" path="/questionTwo"/>
+		<ee:transform doc:name="Transform Message" doc:id="a6af66d0-0ca1-4c9b-be2b-e2be26973cbe" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ((item, index) -> {
+	"id": item.id, 
+	"name": "ABC ->" ++ item.itemname,
+	"code": "Q123 ->" ++ item.itemcode,
+	"price": item.price as Number * 2
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="craft_groupc_assignmentFlow3" doc:id="fe4a3360-9feb-4484-a92f-1601c57088a1" >
+		<http:listener doc:name="Listener" doc:id="7c7eccc5-5edf-40b7-afa6-cf087ff22559" config-ref="HTTP_Listener_config" path="/problemThree"/>
+		<ee:transform doc:name="Transform Message" doc:id="3e1bff60-9bf6-4bd1-8104-8328fa4577e2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+List_Of_Items: {
+	(
+		payload map(item, index) -> {
+			"item" @((item)): {}
+		}
+	)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="craft_groupc_assignmentFlow4" doc:id="db01b5d3-b6ed-4539-b52d-343e62a91b17" >
+		<http:listener doc:name="Listener" doc:id="2dc6d16c-9c06-488e-89e3-935398161a34" config-ref="HTTP_Listener_config" path="/problemFourA"/>
+		<ee:transform doc:name="Transform Message" doc:id="ea3b9396-cd81-4cdc-8a71-0a6d20c63eee" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ((item, index) -> (item.id ++ ", " ++ item.itemname ++ ", "
+	++ item.itemcode ++ ", " ++ item.price
+))]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="craft_groupc_assignmentFlow5" doc:id="5a668077-f04d-4dec-aa2e-b3ac0bd2c405" >
+		<http:listener doc:name="Listener" doc:id="d539bfd6-fe5e-4d02-9c22-79ff25981136" config-ref="HTTP_Listener_config" path="/problemFourB"/>
+		<ee:transform doc:name="Transform Message" doc:id="a2292448-6fce-40a0-81ce-7b40d49483df" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+Allitems: item: (payload map ((item, index) -> (item.id ++ ", " ++  item.itemname  ++ ", " ++ item.itemcode  ++ ", " ++ item.price)))]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="craft_groupc_assignmentFlow6" doc:id="d45df351-1f7b-4207-9e49-8e705186bc95" >
+		<http:listener doc:name="Listener" doc:id="9ca4f3e0-ec45-4d54-b1f5-f4c76b973dd2" config-ref="HTTP_Listener_config" path="/problemSix"/>
+		<ee:transform doc:name="Transform Message" doc:id="3d2e5e38-738c-4f06-bc91-6183699e79da" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.employeers.*employee.empAge]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="craft_groupc_assignmentFlow7" doc:id="b599bd11-c3e5-4837-96c3-3dbf3750574d" >
+		<http:listener doc:name="Listener" doc:id="fde6e2d0-ccdc-4951-875d-a97ea6b1ea65" config-ref="HTTP_Listener_config" path="/problemSeven"/>
+		<ee:transform doc:name="Transform Message" doc:id="08324dea-d41f-4b7f-a894-8eb944667dc5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+payload.employeers.*employee map ((item, index) -> 
+    {
+        "Employee Name": item.empName,
+        "Employee Age": item.empAge,
+        "Employee Salary": item.empSalary,
+        "Employee Company": "Craft Soft"
+    }
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
