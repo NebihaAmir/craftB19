@@ -1,0 +1,56 @@
+	Group - B
+=========================
+Q1.
+payload.user map ($$): $
+-------------------------------------
+Q5.
+users:
+payload.user map user:$ mapObject (upper($$)): $
+-----------------------------------
+
+Q2.
+payload	map {
+	id: $.id,
+	name:"ABC -> " ++ $.itemname,
+	code: "Q123 -> " ++ $.itemcode,
+	price: $.price as Number * 2
+}
+---------------------------------
+
+Q3. XML 
+List_of_Items:
+{(
+ payload map item @(($)):""
+)}
+------------------------------
+Q4.
+JSON OUTPUT
+
+payload	map ($.id ++ " , "++ $.itemname ++ " , " ++ $.itemcode ++" , " ++ $.price)
+
+XML output
+
+Allitems:
+item:
+payload	map ($.id ++ " , "++ $.itemname ++ " , " ++ $.itemcode ++" , " ++ $.price)
+-----------------------------------
+Q6. 	payload..empAge
+----------------------------
+Q7.A 
+%dw 2.0 output application/csv 
+---
+payload..*employee map {
+"employee Fill info":"emplyee Name: " ++ $.empName ++ " "++ "employee Age: " ++ $.empAge ++ " " ++ "employee Salary: " ++ $.empSalary
+} filter ($$ < 2)
+------------------------------------------------
+Q7.B
+%dw 2.0
+output application/csv
+var company = " employee company: craftSoftware"
+---
+payload..*employee map {
+"employee Full info":"emplyee Name: " ++ $.empName ++ " employee Age: " ++ $.empAge++  " employee Salary: " ++ $.empSalary ++ company
+} filter ($$ < 2)
+==============end==================
+
+
