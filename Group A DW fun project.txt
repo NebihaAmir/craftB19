@@ -1,0 +1,62 @@
+
+1. payload.user map (value, index) -> {(index): value}
+
+2. payload map (value, index) -> {
+    id: value.id,
+    name: "ABC -> " ++ value.itemname,
+    code: "Q123 ->" ++ value.itemcode,
+    price: value.price as Number* 2
+} 
+
+3. List_Of_Items: {(
+    
+        payload map(value, index) -> {
+            "item" @((value)): {}
+        
+   }
+)}
+
+4. For the json file
+
+  payload map (value, index) -> (value.id ++ ", " ++ 
+	                           value.itemname  ++ ", " ++
+	                           value.itemcode  ++ ", " ++
+	                            value.price)
+
+4. for the xml file
+
+ Allitems: {item: payload map (value, index) ->  (value.id ++ ", " ++  
+	                                             value.itemname  ++ ", " ++
+	                                             value.itemcode  ++ ", " ++
+	                                              value.price)}
+
+5. users: payload.user map (value, index) -> {user: value mapObject (value, key, index) ->{ (upper(key)): value}}
+
+6. var empInfo = payload.employeers.*employee.empAge
+  ---
+ empInfo
+
+7.With out the company name
+
+ payload.employeers.*employee map (value, index) -> 
+    {   "Employee Full Info" :
+        "Employee Name:" ++ value.empName ++ " " ++
+        "Employee Age:" ++ value.empAge ++ " " ++
+        "Employee Salary:" ++ value.empSalary
+     }
+
+7. With company name added
+
+#[attributes.queryParams.campName
+
+payload.employeers.*employee map (value, index) -> 
+    {   "Employee Full Info" :
+        "Employee Name:" ++ value.empName ++ " " ++
+        "Employee Age:" ++ value.empAge ++ " " ++
+        "Employee Salary:" ++ value.empSalary ++" " ++
+        "Employee Company:" ++ vars.campName
+    }
+
+
+
+
