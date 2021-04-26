@@ -1,0 +1,76 @@
+All answers from Group D
+
+Q1.	output application/json
+	---
+	payload.user map (item, index) -> (index): item
+
+
+Q2.	output application/json	
+	---
+	payload map (v,i) ->{
+	id:v.id,
+	name:"ABC-> " ++ v.itemname,
+	code:"Q123-> " ++ v.itemcode,
+	price:v.price*2
+	}
+
+
+Q3.	output application/xml
+	---
+	"List_of_Items": {
+	(payload map  (value, index) -> {
+		item @((value)): 	
+		{}	
+			
+			})
+			
+			}
+
+	postman localhost8081/path
+		get body json
+		json example 
+
+
+Q4A	output application/json
+	---
+	payload map (v,i) -> (v.id ++  "," ++ v.itemname ++ "," ++ v.itemcode ++ "," ++ v.price)
+
+
+Q4B,	output application/xml
+	---
+	Allitems:item:payload map (v,i) -> (v.id ++  "," ++ v.itemname ++ "," ++ v.itemcode ++ "," ++ v.price)
+
+
+Q5	output application/json
+	---
+	users: payload.user map (item, index) -> {
+      	user: item mapObject (value, key) -> {
+     	(upper(key)): value
+     	 }
+	}
+
+Q6	output application/json
+	---
+	payload.employeers.*employee.empAge
+
+
+Q7A   	output application/csv
+	---
+	payload..*employee map ((value, index) -> {
+    	"employee Full info": "employee Name:" ++ value.empName ++ " " 
+  	  ++ "employee Age:" ++ value.empAge ++ " " ++"employee Salary" 
+	++ value.empSalary ++ " " ++  "employee company: craftSoftware" }) filter ( $$ < 2)
+
+
+
+Q7B     output application/csv
+	---
+	payload..*employee map ((value, index) -> {
+    	"employee Full info": "employee Name:" ++ value.empName ++ " " 
+  	  ++ "employee Age:" ++ value.empAge ++ " " ++"employee Salary" 
+	++ value.empSalary ++ " " ++  "employee company: craftSoftware" }) filter ( $$ < 2)
+
+
+
+	Thanks and regards
+	 Group D
