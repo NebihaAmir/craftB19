@@ -1,0 +1,206 @@
+1
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0b67e512-c459-4bb7-8bf2-bd2c202e49b8" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="b6bb1537-d1ba-46b9-9865-78ddbab7d2b3" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Eliana@1515" database="craft_shopping" />
+	</db:config>
+	<db:config name="Database_Config1" doc:name="Database Config" doc:id="d0b3f7f5-384e-4582-b350-aadf011841d1" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Eliana@1515" database="craft_shopping1" />
+	</db:config>
+<flow name="select" doc:id="03c4bf85-d7f8-48b3-94e0-1bffcca65203" >
+		<http:listener doc:name="Listener" doc:id="bfb8ffb0-f70b-48ae-951a-aabbda77a63d" config-ref="HTTP_Listener_config" path="/select"/>
+		<db:select doc:name="Select" doc:id="54de84a1-4873-439e-b597-45c5f23f036f" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from   craft_onlineshoppin.products;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="4a84d8bd-3bb5-4225-9fda-04bdd3a8a7bd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="13035ee1-15ae-4ab3-b821-17b8f84733c9" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="d2955760-3ca4-43a3-bb15-f4cc8c1058eb">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload filter($.price>5000)map((value,index)->
+	{
+	productId:value.productId,
+   catagoryId:value.catagoryId,
+	name:value.name,
+    description:value.description,
+	video_url:value.video_url,
+	price:value.price
+	
+	})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="5592384e-02cb-439e-b2aa-4fd6e8b18d37" config-ref="Database_Config1">
+			<db:sql><![CDATA[insert into craft_onlineshopping2.products(productId,catagoryId,description,name,video_url,price)
+value
+(:productId,:catagoryId,:description,:name,:video_url,:price);]]></db:sql>
+		</db:bulk-insert>
+		<set-payload value="done" doc:name="Set Payload" doc:id="7b117604-0fac-4de4-a2c7-951595ecca7f" />
+	</flow>
+
+
+
+2.
+	<flow name="question2" doc:id="1a548e99-79ae-4508-a5b5-e188b6741d56" >
+		<http:listener doc:name="Listener" doc:id="6a19a18d-6179-431f-9ef9-d77cb6e29862" config-ref="HTTP_Listener_config" path="/question2"/>
+		<choice doc:name="Choice" doc:id="0075e0ec-2f78-42c6-b468-bdb9b3eef859" >
+			<when expression='#[attributes.queryParams.name1 == "product"]'>
+				<db:select doc:name="Select" doc:id="9a1f2e79-7565-44e6-bd05-24d20be8b09b" config-ref="Database_Config">
+					<db:sql ><![CDATA[select * from product;]]></db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="19d855d7-1fbb-4320-b6b1-c72edeb1892a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.queryParams.name2 == "users"]'>
+				<db:select doc:name="Select" doc:id="4baab2e1-fc5f-44ca-86e6-2439080c37c7" config-ref="Database_Config">
+					<db:sql ><![CDATA[select * from users]]></db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="abbd9768-2f4f-415c-9dcb-9ac8b281e9bf" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="3a3d9804-5d3c-4230-baef-b0e1149f5203" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"msg": "no table found"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
+
+
+
+3.
+xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="782eb2b3-fff4-40a4-81c6-53c793799db1" >
+		<http:listener-connection host="0.0.0.0" port="8087" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="1196f146-7bcc-4bd9-ad15-d9ae5ba66202" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Eliana@1515" database="craft_shopping" />
+	</db:config>
+	<flow name="question3" doc:id="84f71299-5de9-449e-a163-ab27ef000d49" >
+		<http:listener doc:name="Listener" doc:id="b5c65302-27df-459b-917f-7a3282e4919d" config-ref="HTTP_Listener_config" path="/question33"/>
+		<choice doc:name="Choice" doc:id="761458db-7f57-488b-be51-8d9ce97a3297" >
+			<when expression='#[attributes.queryParams.orders == "greaterThan"]'>
+				<db:select doc:name="Select" doc:id="83e3290c-1a9a-47df-b7f9-dfa3cb289423" config-ref="Database_Config">
+					<db:sql ><![CDATA[select * from orders where amount > 5000;]]></db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="93666669-d805-41a2-a899-7cfa8919e041" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.queryParams.orders == "lessThan"]'>
+				<db:select doc:name="Select" doc:id="225ff212-085f-46e0-a181-5f30359774ca" config-ref="Database_Config">
+					<db:sql ><![CDATA[select * from orders where amount < 5000;
+
+
+
+
+
+
+
+
+
+]]></db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="883932e6-fffa-4820-a14b-8839ebccdf74" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+		</choice>
+		<ee:transform doc:name="Transform Message" doc:id="20a3c901-9459-47c2-a596-83bb793a3e30" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload groupBy(amounts) -> amounts.status]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:id="c8c334ff-8cfb-4ef4-b3fb-b0880ef570e4" path="C:\Users\raru2\OneDrive\Documents\user2.json" mode="APPEND"/>
+	</flow>
+
+
+4.
+	<flow name="question4" doc:id="d4669184-d8e4-48fc-8335-3607486c8a1f" >
+		<http:listener doc:name="Listener" doc:id="7625c756-6b2f-488b-960c-46b2006e0c50" config-ref="HTTP_Listener_config" path="/question4"/>
+		<set-variable value="#[attributes.queryParams.num]" doc:name="Set Variable" doc:id="5f167a9f-343f-476c-81c8-87216de8c601" variableName="num"/>
+		<choice doc:name="Choice" doc:id="3ab85bb6-c5e4-42bf-9930-e23f3e7511c6" >
+			<when expression='#[vars.num &lt; 10]'>
+				<choice doc:name="Choice" doc:id="81602498-b630-47ad-93dd-aa732fad8d8e" >
+					<when expression='#[vars.num == "1"]'>
+						<set-payload value="number is 1" doc:name="Set Payload" doc:id="41760ffb-7779-4fd4-9b93-abf05d85b845" />
+						<logger level="INFO" doc:name="Logger" doc:id="236b78b5-d927-4782-b1de-88d7ba6b6b75" message="#[payload]"/>
+					</when>
+					<otherwise >
+						<set-payload value="number is less then 10" doc:name="Set Payload" doc:id="b4b1d1e8-f30f-4423-b913-9ed98f6cdf6e" />
+						<logger level="INFO" doc:name="Logger" doc:id="b79b62d3-f3de-4517-883f-1928b55cb666" message="#[payload]"/>
+					</otherwise>
+				</choice>
+			</when>
+			<when expression='#[vars.num == "10"]'>
+				<set-payload value="number is equal 10" doc:name="Set Payload" doc:id="13887473-1710-4b00-9e02-3310a77cd5a0" />
+				<logger level="INFO" doc:name="Logger" doc:id="3009fa60-ebd2-43d3-b381-19276a9eed5c" message="#[payload]"/>
+			</when>
+			<otherwise >
+				<set-payload value="number is greater than 10" doc:name="Set Payload" doc:id="40ea014d-4a9c-4320-b268-f1aad46dd4af" />
+				<logger level="INFO" doc:name="Logger" doc:id="4bb2e31a-00fe-4afb-b953-aad6900d6352" message="#[payload]"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
+
