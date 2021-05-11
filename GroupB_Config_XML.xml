@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="ded88663-5f1a-4e77-9b55-8568c8eac420" >
+		<file:connection workingDir="C:\Users\kalub\Desktop\examples" />
+	</file:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="1e5ecb8b-f1ea-4c99-bed7-473ab4d11b41" file="dev.properties" />
+	<flow name="group_b_projectFlow4" doc:id="90dcdb72-3515-4865-a214-d16b878e25d7" >
+		<http:listener doc:name="Listener" doc:id="444e38b6-dff0-451f-b00b-f7f6815e5cad" config-ref="HTTP_Listener_config" path="/transfer"/>
+		<db:select doc:name="From craft_online_shopping" doc:id="336864ca-4a5b-4dbe-93ec-81f999e3096e" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from craft_online_shopping.products;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform and Filter" doc:id="90d5535f-a4ea-44a1-ad96-00c452825f3f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map {	
+		productID: $.productID,
+		categoryID: $.categoryID,
+		description: $.description,
+		pName: $.pName,
+		price: $.price,
+		video_URL: $.video_URL
+		} filter ($.price > 5000) ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-insert doc:name="INTO craft_shopping1" doc:id="6dee9771-3c43-453c-b4f9-9e2489a11055" config-ref="Database_Config">
+			<db:sql><![CDATA[Insert into craft_shopping1.products(productID, categoryID, pName, description, price, video_URL) values
+(null, :categoryID, :pName, :description, :price, :video_URL)]]></db:sql>
+		</db:bulk-insert>
+		<set-payload value="Data inserted" doc:name="Set Payload" doc:id="1502560f-8283-4335-aa35-ea2f66946636" />
+	</flow>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="4a196b6c-e1eb-43ed-9fba-8d05df78f2e0" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="ba889f8a-ffba-4e56-a09b-f59e0a68cc67" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" />
+	</db:config>
+	<flow name="group_b_projectFlow2C" doc:id="8a6eb25f-c15b-4284-9221-01ec317ed1af" >
+		<http:listener doc:name="Listener fetch" doc:id="cf4d4f60-54b2-4364-b6e3-83735cb9c24f" config-ref="HTTP_Listener_config" path="/fetch"/>
+		<set-variable value="#[attributes.queryParams.info]" doc:name="Set Variable" doc:id="29b4459a-2ffb-4490-9538-ed9180f1df65" variableName="myVar"/>
+		<choice doc:name="Choice" doc:id="5b440c6d-d1e9-45c0-80a4-7aa4ed93e93d">
+			<when expression="#[vars.myVar=='product']">
+				<db:select doc:name="Select" doc:id="4a38f354-5e90-4e58-a582-9515b19d80ad" config-ref="Database_Config">
+					<db:sql><![CDATA[SELECT * FROM craft_online_shopping.products;]]></db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="a0468f7b-3d01-4048-91aa-9bf6da00f073" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression="#[vars.myVar=='user']">
+				<db:select doc:name="Select" doc:id="c9bc650b-04cb-4f26-8f4c-0fa9d6141b35" config-ref="Database_Config">
+					<db:sql><![CDATA[SELECT * FROM craft_online_shopping.users;]]></db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="b14ed2a0-921c-451e-baa4-64472c94a776" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<set-payload value="'check your params which should be: - ?info=product or user'" doc:name="Set Payload" doc:id="4d014117-e3df-4141-a0c6-dd366e576c6b" mimeType="application/json"/>
+
+			</otherwise>
+		
+</choice>
+	
+</flow>
+	<flow name="group_b_projectFlow3" doc:id="748da7e5-624e-4a5d-9751-56cd4fad9542" >
+		<http:listener doc:name="/filter" doc:id="b784f271-1fa0-4090-aa46-c7847bebe80f" path="/filter" config-ref="HTTP_Listener_config"/>
+		<db:select doc:name="Select" doc:id="c036992b-708e-4d77-bb97-d793264b82df" config-ref="Database_Config">
+			<db:sql><![CDATA[SELECT * FROM craft_online_shopping.orders;]]></db:sql>
+		</db:select>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="614830cb-5b03-4c4d-8fc4-98169051e84c">
+			<route>
+				<ee:transform doc:name="Filter &amp; group &gt;= 5000" doc:id="adb6ce40-dd0d-4953-bf07-a8744d7c1133">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+'Orders amount >= 5,000 ': payload map $
+filter ($.amount >= 5000) groupBy ($.status)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</route>
+			<route>
+				<ee:transform doc:name="Filter &amp; group &lt; 5000" doc:id="be3e401d-1160-48b2-b9d1-b93d3ef3b28b">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+'Orders amount < 5,000 ': payload map $ filter ($.amount < 5000) groupBy ($.status)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="f1582418-ca43-42e0-9a46-745e88bc904d">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload..payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:id="1c652ded-8262-46a0-a775-3b288c8257e6" config-ref="File_Config" path="C:\Users\kalub\Desktop\examples\new group.txt" mode="APPEND"/>
+		<set-payload value="'successfull'" doc:name="Set Payload" doc:id="50b03526-b035-45da-8a5a-928ed5d1888a" />
+	</flow>
+	<flow name="group_b_projectFlow" doc:id="3151f9ab-735c-4f59-8e26-949f849a4cf0" >
+		<http:listener doc:name="Listener /choice" doc:id="5ac750e6-ae9b-4db9-b8d3-0a9e3b4672e3" config-ref="HTTP_Listener_config" path="/choice"/>
+		<set-variable value="#[attributes.queryParams.num as Number]" doc:name="Set Variable" doc:id="c611cdf5-0b69-4ad6-ae75-97714d5b1d53" variableName="myNum"/>
+		<choice doc:name="Choice" doc:id="ee762677-62eb-425c-a55a-400c23fcd9c9" >
+			<when expression="#[vars.myNum &lt; 10]">
+				<choice doc:name="Choice" doc:id="4e64c198-e3af-4496-8e7d-39abbce5e387" >
+					<when expression="#[vars.myNum == 1]">
+						<set-payload value="Num is 1" doc:name="Set Payload" doc:id="f1e7909d-725f-44c8-a5e3-98fb2e07af0b" />
+					</when>
+					<otherwise >
+						<set-payload value="Num is  less than 10" doc:name="Set Payload" doc:id="7edb0065-9057-4156-a817-5ee0af7122ba" />
+					</otherwise>
+				</choice>
+			</when>
+			<when expression="#[vars.myNum == 10]">
+				<set-payload value="Num is equal to 10" doc:name="Set Payload" doc:id="09f78576-ed0a-47bf-b305-9b9cd4fc5ba2" />
+			</when>
+			<otherwise >
+				<set-payload value="Num is greater than 10" doc:name="Set Payload" doc:id="3f622f32-74d6-4540-9ac2-f9c2ea88c7c2" />
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
